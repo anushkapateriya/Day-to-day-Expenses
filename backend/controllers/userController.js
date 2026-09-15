@@ -1,11 +1,10 @@
 const User = require("../models/user");
 
 const signup = async (req, res) => {
-
     const { name, email, password } = req.body;
 
     try {
-
+        
         const existingUser = await User.findOne({
             where: {
                 email: email
@@ -39,7 +38,46 @@ const signup = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+
+    const { email, password } = req.body;
+
+    try {
+
+        const user = await User.findOne({
+            where: {
+                email: email
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (user.password !== password) {
+            return res.status(401).json({
+                message: "User not authorized"
+            });
+        }
+
+        res.status(200).json({
+            message: "User login successful"
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+};
+
 module.exports = {
-    signup
+    signup,
+    login
 };
 

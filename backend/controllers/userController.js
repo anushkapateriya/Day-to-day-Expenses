@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const signup = async (req, res) => {
     const { name, email, password } = req.body;
@@ -17,10 +19,12 @@ const signup = async (req, res) => {
             });
         }
 
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         const user = await User.create({
             name: name,
             email: email,
-            password: password
+            password: hashedPassword
         });
 
         res.status(201).json({
@@ -56,9 +60,11 @@ const login = async (req, res) => {
             });
         }
 
-        if (user.password !== password) {
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
             return res.status(401).json({
-                message: "User not authorized"
+                message: "User not authorized-Incorrect Password"
             });
         }
 

@@ -15,9 +15,10 @@ signupForm.addEventListener("submit", async function(event) {
         });
 
         console.log(response.data);
+         document.getElementById("message").innerText = response.data.message;
 
     } catch (error) {
-        console.log("Error:", error);
+        document.getElementById("message").innerText = error.response.data.message;
     }
 });
 

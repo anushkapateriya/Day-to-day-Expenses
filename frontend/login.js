@@ -14,7 +14,9 @@ loginForm.addEventListener("submit", async function(event) {
             password: password
         });
 
-        document.getElementById("message").innerText = response.data.message;
+        localStorage.setItem("isLoggedIn", "true");
+
+        window.location.href = "expense.html";
 
     } catch (error) {
 

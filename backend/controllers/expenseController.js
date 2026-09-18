@@ -9,7 +9,8 @@ const addExpense = async (req, res) => {
         const expense = await Expense.create({
             amount: amount,
             description: description,
-            category: category
+            category: category,
+            UserId: req.userId
         });
 
         res.status(201).json({
@@ -31,7 +32,11 @@ const getExpenses = async (req, res) => {
 
     try {
 
-        const expenses = await Expense.findAll();
+        const expenses = await Expense.findAll({
+            where: {
+                UserId: req.userId
+            }
+        });
 
         res.status(200).json({
             expenses: expenses
@@ -53,7 +58,12 @@ const deleteExpense = async (req, res) => {
 
     try {
 
-        const expense = await Expense.findByPk(id);
+        const expense = await Expense.findOne({
+            where:{
+                id: id,
+                UserId: req.userId
+            }
+        });
 
         if (!expense) {
             return res.status(404).json({

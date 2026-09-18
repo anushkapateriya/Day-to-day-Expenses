@@ -1,4 +1,4 @@
-if (localStorage.getItem("isLoggedIn") !== "true") {
+if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
 
@@ -21,9 +21,16 @@ expenseForm.addEventListener("submit", async function(event) {
 
     try {
 
+        const token = localStorage.getItem("token");
+
         const response = await axios.post(
             "http://localhost:3000/expenses",
-            expense
+            expense,
+            {
+                headers:{
+                    Authorization: token                
+                }
+            }
         );
 
         console.log(response.data);
@@ -41,9 +48,16 @@ async function getExpenses() {
 
     try {
 
+        const token = localStorage.getItem("token");
+
         const response = await axios.get(
-            "http://localhost:3000/expenses"
-        );
+            "http://localhost:3000/expenses",
+            {
+                headers: {
+                    Authorization: token
+        }
+    }
+);
 
         const expenses = response.data.expenses;
 
@@ -80,7 +94,15 @@ async function deleteExpense(id) {
 
     try {
 
-        await axios.delete(`http://localhost:3000/expenses/${id}`);
+        const token = localStorage.getItem("token");
+
+        await axios.delete(`http://localhost:3000/expenses/${id}`,
+            {
+                headers:{
+                    Authorization: token
+                }
+            }
+        );
 
         getExpenses();
 

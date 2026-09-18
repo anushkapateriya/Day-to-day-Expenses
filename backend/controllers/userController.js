@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
 const signup = async (req, res) => {
     const { name, email, password } = req.body;
@@ -68,8 +69,14 @@ const login = async (req, res) => {
             });
         }
 
-        res.status(200).json({
-            message: "User login successful"
+        const token = jwt.sign(
+            { userId: user.id },
+            "mysecretkey"
+        );
+
+        res.status(200).json({ 
+            message: "User login successful",
+            token: token
         });
 
     } catch (error) {

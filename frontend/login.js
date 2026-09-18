@@ -14,8 +14,8 @@ loginForm.addEventListener("submit", async function(event) {
             password: password
         });
 
-        localStorage.setItem("isLoggedIn", "true");
-
+        localStorage.setItem("token", response.data.token);
+        
         window.location.href = "expense.html";
 
     } catch (error) {

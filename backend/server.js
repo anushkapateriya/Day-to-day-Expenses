@@ -1,11 +1,16 @@
+require("dotenv").config();
+
 const express = require("express");
 const sequelize = require("./config/database");
 const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+
 const User = require("./models/user");
 const Expense = require("./models/expense");
+const Order = require("./models/order");
 
 const app = express();
 
@@ -14,9 +19,13 @@ app.use(cors());
 
 app.use("/", userRoutes);
 app.use("/", expenseRoutes);
+app.use("/", orderRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize.sync()
     .then(function() { 

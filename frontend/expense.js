@@ -112,3 +112,77 @@ async function deleteExpense(id) {
 
     }
 }
+
+const premiumButton = document.getElementById("premiumButton");
+
+const cashfree = Cashfree({
+    mode: "sandbox"
+});
+
+premiumButton.addEventListener("click", async function() {
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await axios.post(
+            "http://localhost:3000/create-order",
+            {},
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+        );
+
+        const paymentSessionId = response.data.paymentSessionId;
+
+        const result = await cashfree.checkout({
+            paymentSessionId: paymentSessionId,
+            redirectTarget: "_self"
+        });
+
+        console.log(result);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+});
+
+const urlParams = new URLSearchParams(window.location.search);
+
+const orderId = urlParams.get("order_id");
+
+if (orderId) {
+
+    verifyPayment(orderId);
+
+}
+
+async function verifyPayment(orderId) {
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:3000/verify-payment?order_id=${orderId}`,
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+        );
+
+        document.getElementById("paymentMessage").innerText =
+            response.data.message;
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+}
+

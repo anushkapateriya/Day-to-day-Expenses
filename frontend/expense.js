@@ -232,7 +232,7 @@ leaderboardButton.addEventListener("click", async function() {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${user.User.name}</td>
+                <td>${user.name}</td>
                 <td>₹${user.totalExpense}</td>
             `;
 

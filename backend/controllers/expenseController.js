@@ -1,4 +1,5 @@
 const Expense = require("../models/expense");
+const User = require("../models/user");
 
 const addExpense = async (req, res) => {
 
@@ -12,6 +13,12 @@ const addExpense = async (req, res) => {
             category: category,
             UserId: req.userId
         });
+
+        const user = await User.findByPk(req.userId);
+
+        user.totalExpense = user.totalExpense + Number(amount);
+
+        await user.save();
 
         res.status(201).json({
             message: "Expense added successfully",
@@ -70,6 +77,11 @@ const deleteExpense = async (req, res) => {
                 message: "Expense not found"
             });
         }
+        const user = await User.findByPk(req.userId);
+
+        user.totalExpense = user.totalExpense - Number(expense.amount);
+
+        await user.save();
 
         await expense.destroy();
 

@@ -1,11 +1,13 @@
 const Expense = require("../models/expense");
 const User = require("../models/user");
+const { categorizeExpense } = require("../services/aiService");
 
 const addExpense = async (req, res) => {
 
-    const { amount, description, category } = req.body;
+    const { amount, description } = req.body;
 
     try {
+        const category = await categorizeExpense(description);
 
         const expense = await Expense.create({
             amount: amount,

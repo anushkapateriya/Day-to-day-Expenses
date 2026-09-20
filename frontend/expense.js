@@ -18,12 +18,10 @@ expenseForm.addEventListener("submit", async function(event) {
 
     const amount = document.getElementById("amount").value;
     const description = document.getElementById("description").value;
-    const category = document.getElementById("category").value;
 
     const expense = {
         amount: amount,
-        description: description,
-        category: category
+        description: description
     };
 
     try {

@@ -4,6 +4,8 @@ const User = require("../models/user");
 
 const createOrder = async (req, res) => {
 
+    const transaction = await Order.sequelize.transaction();
+
     try {
 
         const orderId = "order_" + Date.now();
@@ -34,7 +36,11 @@ const createOrder = async (req, res) => {
             orderId: orderId,
             status: "PENDING",
             UserId: req.userId
+        }, {
+            transaction: transaction
         });
+
+        await transaction.commit();
 
         res.status(200).json({
             message: "Order created successfully",
@@ -43,6 +49,8 @@ const createOrder = async (req, res) => {
         });
 
     } catch (error) {
+
+        await transaction.rollback();
 
         console.log(error);
 

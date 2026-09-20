@@ -6,15 +6,21 @@ const jwt = require("jsonwebtoken");
 const signup = async (req, res) => {
     const { name, email, password } = req.body;
 
+    const transaction = await User.sequelize.transaction();
+
     try {
         
         const existingUser = await User.findOne({
             where: {
                 email: email
-            }
+            },
+            transaction: transaction
         });
 
         if (existingUser) {
+
+            await transaction.rollback();
+
             return res.status(400).json({
                 message: "User already exists"
             });
@@ -26,14 +32,21 @@ const signup = async (req, res) => {
             name: name,
             email: email,
             password: hashedPassword
+        },{
+            transaction: transaction
         });
+
+        await transaction.commit();
+
 
         res.status(201).json({
             message: "User created successfully",
-            user: user
+            
         });
 
     } catch (error) {
+
+        await transaction.rollback();
 
         console.log(error);
 

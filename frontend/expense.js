@@ -2,6 +2,13 @@ if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
 
+const isPremium = localStorage.getItem("isPremium");
+
+if (isPremium === "true") {
+    document.getElementById("premiumMessage").innerText =
+        "You are a premium user now";
+}
+
 const expenseForm = document.getElementById("expenseForm");
 const expenseTableBody = document.getElementById("expenseTableBody");
 
@@ -175,9 +182,13 @@ async function verifyPayment(orderId) {
                 }
             }
         );
+        
+        if (response.data.message === "Transaction successful") {
+            localStorage.setItem("isPremium", "true");
+        }
 
-        document.getElementById("paymentMessage").innerText =
-            response.data.message;
+alert(response.data.message);
+        alert(response.data.message);
 
     } catch (error) {
 
@@ -186,3 +197,51 @@ async function verifyPayment(orderId) {
     }
 }
 
+const leaderboardButton = document.getElementById("leaderboardButton");
+
+leaderboardButton.addEventListener("click", async function() {
+
+    const isPremium = localStorage.getItem("isPremium");
+
+    if (isPremium !== "true") {
+        alert("Only premium users can access the leaderboard");
+        return;
+    }
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            "http://localhost:3000/premium/showleaderboard",
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+        );
+
+        const leaderboard = response.data.leaderboard;
+
+        const leaderboardDiv = document.getElementById("leaderboard");
+
+        leaderboardDiv.innerHTML = "";
+
+        leaderboard.forEach(function(user) {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${user.User.name}</td>
+                <td>₹${user.totalExpense}</td>
+            `;
+
+            leaderboardDiv.appendChild(row);
+        });
+
+    } catch (error) {
+
+        console.log(error.response.data.message);
+
+    }
+});

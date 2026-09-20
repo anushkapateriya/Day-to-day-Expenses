@@ -15,7 +15,8 @@ loginForm.addEventListener("submit", async function(event) {
         });
 
         localStorage.setItem("token", response.data.token);
-        
+        localStorage.setItem("isPremium", response.data.isPremium);
+
         window.location.href = "expense.html";
 
     } catch (error) {

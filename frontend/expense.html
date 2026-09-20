@@ -6,9 +6,23 @@
 <body>
 
     <h1>Daily Expenses</h1>
-
+    <h2 id="premiumMessage"></h2>
     <button id="premiumButton">Buy Premium Membership</button>
-    <p id="paymentMessage"></p>
+
+    <h2>Leaderboard</h2>
+
+    <button id="leaderboardButton">Show Leaderboard</button>
+    <table border="1" id="leaderboardTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Total Expenses</th>
+            </tr>
+        </thead>
+
+        <tbody id="leaderboard">
+        </tbody>
+    </table>
 
     <form id="expenseForm">
 

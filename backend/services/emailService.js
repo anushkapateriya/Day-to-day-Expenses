@@ -4,28 +4,27 @@ const brevo = new BrevoClient({
     apiKey: process.env.BREVO_API_KEY
 });
 
-const sendForgotPasswordEmail = async (email) => {
-
-    const response = await brevo.transactionalEmails.sendTransacEmail({
-        sender: {
+const sendForgotPasswordEmail= async (email, resetUrl) => {
+    
+    const response= await brevo.transactionalEmails.sendTransacEmail({
+        sender:{
             name: "Expense Tracker",
             email: process.env.BREVO_SENDER_EMAIL
         },
 
-        to: [
+        to:[
             {
-                email: email
+                email:email
             }
         ],
-
-        subject: "Forgot Password",
+        subject:"Forgot Password",
 
         textContent:
-            "This is a dummy email from your Expense Tracker. You requested a password reset."
+        `Click this link to reset your password:\n\n${resetUrl}`
     });
-
+    
     return response;
-};
+}
 
 module.exports = {
     sendForgotPasswordEmail

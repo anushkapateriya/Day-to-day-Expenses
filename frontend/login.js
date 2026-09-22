@@ -25,3 +25,10 @@ loginForm.addEventListener("submit", async function(event) {
 
     }
 });
+
+document.getElementById("forgotPasswordButton")
+    .addEventListener("click", function() {
+
+        window.location.href = "forgotPassword.html";
+
+    });

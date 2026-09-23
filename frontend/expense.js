@@ -14,6 +14,21 @@ const expenseTableBody = document.getElementById("expenseTableBody");
 
 let currentPage = 1;
 
+const limitSelect = document.getElementById("limitSelect");
+
+let limit = Number(localStorage.getItem("expenseLimit")) || 10;
+
+limitSelect.value = limit;
+
+limitSelect.addEventListener("change", function() {
+    limit = Number(this.value);
+
+    localStorage.setItem("expenseLimit", limit);
+
+    currentPage = 1;
+
+    getExpenses();
+});
 
 expenseForm.addEventListener("submit", async function(event) {
 
@@ -65,7 +80,7 @@ async function getExpenses() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-            `http://localhost:3000/expenses?page=${currentPage}`,
+            `http://localhost:3000/expenses?page=${currentPage}&limit=${limit}`,
             {
                 headers: {
                     Authorization: token
@@ -74,7 +89,17 @@ async function getExpenses() {
         );
 
         const expenses = response.data.expenses;
-        const totalPages = response.data.totalPages;
+        let totalPages = response.data.totalPages;
+
+        if (totalPages === 0) {
+            totalPages = 1;
+        }
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+            await getExpenses();
+            return;
+        }
 
         expenseTableBody.innerHTML = "";
 

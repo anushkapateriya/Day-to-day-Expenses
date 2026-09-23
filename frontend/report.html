@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Expense Report</title>
+
+    <link rel="stylesheet" href="report.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Day to Day Expenses</h1>
+
+        <p id="currentDate"></p>
+
+        <h2>Expense Report</h2>
+
+        <!-- Report Options -->
+
+        <div class="controls">
+
+            <label for="reportType">View Report:</label>
+
+            <select id="reportType">
+
+                <option value="daily">Daily</option>
+
+                <option value="weekly">Weekly</option>
+
+                <option value="monthly">Monthly</option>
+
+            </select>
+
+            <button id="downloadButton">
+                ↓ Download Report
+            </button>
+
+        </div>
+
+
+        <!-- Report Table -->
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Description</th>
+
+                    <th>Category</th>
+
+                    <th>Income</th>
+
+                    <th>Expense</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="reportTableBody">
+            </tbody>
+
+        </table>
+
+
+        <!-- Summary -->
+
+        <div class="summary">
+
+            <div>
+                <h3>Total Income</h3>
+                <p id="totalIncome">₹0</p>
+            </div>
+
+            <div>
+                <h3>Total Expense</h3>
+                <p id="totalExpense">₹0</p>
+            </div>
+
+            <div>
+                <h3>Savings</h3>
+                <p id="savings">₹0</p>
+            </div>
+
+        </div>
+
+
+        <p id="message"></p>
+
+    </div>
+
+
+    <script src="report.js"></script>
+
+</body>
+
+</html>

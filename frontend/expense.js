@@ -243,3 +243,10 @@ leaderboardButton.addEventListener("click", async function() {
 
     }
 });
+
+document.getElementById("reportButton")
+    .addEventListener("click", function() {
+
+        window.location.href = "report.html";
+
+    });

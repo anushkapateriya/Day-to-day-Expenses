@@ -36,10 +36,12 @@ expenseForm.addEventListener("submit", async function(event) {
 
     const amount = document.getElementById("amount").value;
     const description = document.getElementById("description").value;
+    const note = document.getElementById("note").value;
 
     const expense = {
         amount: amount,
-        description: description
+        description: description,
+        note: note
     };
 
     try {
@@ -107,9 +109,10 @@ async function getExpenses() {
 
             const row = document.createElement("tr");
 
-            row.innerHTML = `
+           row.innerHTML = `
                 <td>${expense.amount}</td>
                 <td>${expense.description}</td>
+                <td>${expense.note || ""}</td>
                 <td>${expense.category}</td>
                 <td>
                     <button onclick="deleteExpense(${expense.id})">

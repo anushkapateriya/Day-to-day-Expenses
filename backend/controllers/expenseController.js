@@ -4,7 +4,7 @@ const { categorizeExpense } = require("../services/aiService");
 
 const addExpense = async (req, res) => {
 
-    const { amount, description } = req.body;
+    const { amount, description, note } = req.body;
 
     const transaction = await User.sequelize.transaction();
 
@@ -14,6 +14,7 @@ const addExpense = async (req, res) => {
         const expense = await Expense.create({
             amount: amount,
             description: description,
+            note:note,
             category: category,
             UserId: req.userId
         },{

@@ -12,6 +12,9 @@ if (isPremium === "true") {
 const expenseForm = document.getElementById("expenseForm");
 const expenseTableBody = document.getElementById("expenseTableBody");
 
+let currentPage = 1;
+
+
 expenseForm.addEventListener("submit", async function(event) {
 
     event.preventDefault();
@@ -32,8 +35,8 @@ expenseForm.addEventListener("submit", async function(event) {
             "http://localhost:3000/expenses",
             expense,
             {
-                headers:{
-                    Authorization: token                
+                headers: {
+                    Authorization: token
                 }
             }
         );
@@ -42,12 +45,18 @@ expenseForm.addEventListener("submit", async function(event) {
 
         expenseForm.reset();
 
+        currentPage = 1;
+
+        getExpenses();
+
     } catch (error) {
 
         console.log(error.response.data.message);
 
     }
 });
+
+// GET EXPENSES WITH PAGINATION
 
 async function getExpenses() {
 
@@ -56,15 +65,16 @@ async function getExpenses() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-            "http://localhost:3000/expenses",
+            `http://localhost:3000/expenses?page=${currentPage}`,
             {
                 headers: {
                     Authorization: token
-        }
-    }
-);
+                }
+            }
+        );
 
         const expenses = response.data.expenses;
+        const totalPages = response.data.totalPages;
 
         expenseTableBody.innerHTML = "";
 
@@ -77,12 +87,23 @@ async function getExpenses() {
                 <td>${expense.description}</td>
                 <td>${expense.category}</td>
                 <td>
-                    <button onclick="deleteExpense(${expense.id})">Delete</button>
+                    <button onclick="deleteExpense(${expense.id})">
+                        Delete
+                    </button>
                 </td>
             `;
 
             expenseTableBody.appendChild(row);
         });
+
+        document.getElementById("pageNumber").innerText =
+            `Page ${currentPage} of ${totalPages}`;
+
+        document.getElementById("previousButton").disabled =
+            currentPage === 1;
+
+        document.getElementById("nextButton").disabled =
+            currentPage === totalPages;
 
     } catch (error) {
 
@@ -91,9 +112,33 @@ async function getExpenses() {
     }
 }
 
+// NEXT PAGE
+
+document.getElementById("nextButton")
+    .addEventListener("click", function() {
+
+        currentPage++;
+
+        getExpenses();
+
+    });
+
+// PREVIOUS PAGE
+
+document.getElementById("previousButton")
+    .addEventListener("click", function() {
+
+        currentPage--;
+
+        getExpenses();
+
+    });
+
 
 getExpenses();
 
+
+// DELETE EXPENSE
 
 async function deleteExpense(id) {
 
@@ -101,9 +146,10 @@ async function deleteExpense(id) {
 
         const token = localStorage.getItem("token");
 
-        await axios.delete(`http://localhost:3000/expenses/${id}`,
+        await axios.delete(
+            `http://localhost:3000/expenses/${id}`,
             {
-                headers:{
+                headers: {
                     Authorization: token
                 }
             }
@@ -117,6 +163,9 @@ async function deleteExpense(id) {
 
     }
 }
+
+
+// PREMIUM MEMBERSHIP
 
 const premiumButton = document.getElementById("premiumButton");
 
@@ -156,6 +205,9 @@ premiumButton.addEventListener("click", async function() {
     }
 });
 
+
+// VERIFY PAYMENT
+
 const urlParams = new URLSearchParams(window.location.search);
 
 const orderId = urlParams.get("order_id");
@@ -180,12 +232,14 @@ async function verifyPayment(orderId) {
                 }
             }
         );
-        
+
         if (response.data.message === "Transaction successful") {
+
             localStorage.setItem("isPremium", "true");
+
         }
 
-alert(response.data.message);
+        alert(response.data.message);
         alert(response.data.message);
 
     } catch (error) {
@@ -195,6 +249,11 @@ alert(response.data.message);
     }
 }
 
+
+// =========================
+// LEADERBOARD
+// =========================
+
 const leaderboardButton = document.getElementById("leaderboardButton");
 
 leaderboardButton.addEventListener("click", async function() {
@@ -202,7 +261,9 @@ leaderboardButton.addEventListener("click", async function() {
     const isPremium = localStorage.getItem("isPremium");
 
     if (isPremium !== "true") {
+
         alert("Only premium users can access the leaderboard");
+
         return;
     }
 
@@ -221,7 +282,8 @@ leaderboardButton.addEventListener("click", async function() {
 
         const leaderboard = response.data.leaderboard;
 
-        const leaderboardDiv = document.getElementById("leaderboard");
+        const leaderboardDiv =
+            document.getElementById("leaderboard");
 
         leaderboardDiv.innerHTML = "";
 
@@ -235,6 +297,7 @@ leaderboardButton.addEventListener("click", async function() {
             `;
 
             leaderboardDiv.appendChild(row);
+
         });
 
     } catch (error) {
@@ -243,6 +306,11 @@ leaderboardButton.addEventListener("click", async function() {
 
     }
 });
+
+
+// =========================
+// REPORT
+// =========================
 
 document.getElementById("reportButton")
     .addEventListener("click", function() {

@@ -53,14 +53,27 @@ const getExpenses = async (req, res) => {
 
     try {
 
-        const expenses = await Expense.findAll({
+        const page = Math.max(Number(req.query.page) || 1,1);
+        const limit = 10;
+
+        const offset = (page - 1) * limit;
+
+        const { count, rows } = await Expense.findAndCountAll({
             where: {
                 UserId: req.userId
-            }
+            },
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
         });
 
+        const totalPages = Math.ceil(count / limit);
+
         res.status(200).json({
-            expenses: expenses
+            expenses: rows,
+            currentPage: page,
+            totalPages: totalPages,
+            totalExpenses: count
         });
 
     } catch (error) {

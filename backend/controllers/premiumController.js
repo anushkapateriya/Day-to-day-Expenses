@@ -1,5 +1,6 @@
 
 const User = require("../models/user");
+const { logError } = require("../logger");
 
 
 const showLeaderboard = async (req, res) => {
@@ -25,7 +26,7 @@ const showLeaderboard = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"

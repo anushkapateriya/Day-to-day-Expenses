@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const {
     sendForgotPasswordEmail
 } = require("../services/emailService");
+const { logError } = require("../logger");
 
 const forgotPassword = async (req, res) => {
 
@@ -32,7 +33,7 @@ const forgotPassword = async (req, res) => {
         });
 
         const resetUrl =
-            `http://localhost:3000/password/resetpassword/${requestId}`;
+            `${process.env.BACKEND_URL}/password/resetpassword/${requestId}`;
         
         await sendForgotPasswordEmail(email, resetUrl);
         
@@ -42,7 +43,7 @@ const forgotPassword = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"
@@ -121,8 +122,8 @@ const resetPassword= async (req,res)=>{
 
     } catch (error) {
 
-        console.log(error);
-
+        logError(error);
+       
         res.status(500).send("Something went wrong");
         
     }

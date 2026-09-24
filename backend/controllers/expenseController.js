@@ -1,6 +1,7 @@
 const Expense = require("../models/expense");
 const User = require("../models/user");
 const { categorizeExpense } = require("../services/aiService");
+const { logError } = require("../logger");
 
 const addExpense = async (req, res) => {
 
@@ -42,7 +43,7 @@ const addExpense = async (req, res) => {
 
         await transaction.rollback();
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"
@@ -79,7 +80,7 @@ const getExpenses = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"
@@ -135,7 +136,7 @@ const deleteExpense = async (req, res) => {
 
         await transaction.rollback();
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"

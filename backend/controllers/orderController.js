@@ -1,6 +1,7 @@
 const cashfree = require("../config/cashfree");
 const Order = require("../models/order");
 const User = require("../models/user");
+const { logError } = require("../logger");
 
 const createOrder = async (req, res) => {
 
@@ -10,7 +11,9 @@ const createOrder = async (req, res) => {
 
         const orderId = "order_" + Date.now();
 
-        const orderAmount = 100;
+        const orderAmount = Number(process.env.PREMIUM_AMOUNT);
+        
+        const user = await User.findByPk(req.userId);
 
         const request = {
             order_amount: orderAmount,
@@ -26,7 +29,7 @@ const createOrder = async (req, res) => {
 
             order_meta: {
                 return_url:
-                    "http://127.0.0.1:5500/frontend/expense.html?order_id={order_id}"
+                     `${process.env.FRONTEND_URL}/expense.html?order_id={order_id}`
             }
         };
 
@@ -52,7 +55,7 @@ const createOrder = async (req, res) => {
 
         await transaction.rollback();
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"
@@ -120,7 +123,7 @@ const verifyPayment = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"

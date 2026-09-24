@@ -1,8 +1,11 @@
 require("dotenv").config();
 
 const express = require("express");
+const morgan = require("morgan");
+const fs = require("fs");
 const sequelize = require("./config/database");
 const cors = require("cors");
+const { logError } = require("./logger");
 
 const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
@@ -16,6 +19,15 @@ const Order = require("./models/order");
 const ForgotPasswordRequest = require("./models/forgotPasswordRequest");
 
 const app = express();
+
+const accessLogStream = fs.createWriteStream(
+    "./logs/access.log",
+    { flags: "a" }
+);
+
+app.use(morgan("combined", {
+    stream: accessLogStream
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,11 +57,13 @@ sequelize.sync()
     .then(function() { 
         console.log("Database connected"); 
     })
-    .catch(function(error) { 
-        console.log("Database connection error:", error); 
+    .catch(function(error) {  
+        logError(error);
     });
 
-app.listen(3000, function() {
-    console.log("Server is running on port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function() {
+    console.log(`Server is running on port ${PORT}`);
 });
 

@@ -12,7 +12,7 @@ const authenticateUser = (req, res, next) => {
 
     try {
 
-        const decodedToken = jwt.verify(token, "mysecretkey");
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
         req.userId = decodedToken.userId;
 

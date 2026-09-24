@@ -2,6 +2,7 @@ const User = require("../models/user");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
+const { logError } = require("../logger");
 
 const signup = async (req, res) => {
     const { name, email, password } = req.body;
@@ -48,7 +49,7 @@ const signup = async (req, res) => {
 
         await transaction.rollback();
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"
@@ -84,7 +85,7 @@ const login = async (req, res) => {
 
         const token = jwt.sign(
             { userId: user.id },
-            "mysecretkey"
+            process.env.JWT_SECRET
         );
 
         res.status(200).json({ 
@@ -95,7 +96,7 @@ const login = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        logError(error);
 
         res.status(500).json({
             message: "Something went wrong"

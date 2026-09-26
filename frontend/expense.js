@@ -346,3 +346,105 @@ document.getElementById("reportButton")
         window.location.href = "report.html";
 
     });
+
+
+const downloadExpensesBtn = document.getElementById("downloadExpensesBtn");
+const downloadMessage = document.getElementById("downloadMessage");
+
+downloadExpensesBtn.addEventListener("click", async () => {
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            "http://localhost:3000/download-expenses",
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+        );
+
+        downloadMessage.innerHTML = `
+            <p>${response.data.message}</p>
+            <a href="${response.data.fileUrl}" target="_blank">
+                Download your expense file
+            </a>
+        `;
+
+    } catch (error) {
+
+        if (error.response) {
+
+            downloadMessage.innerText =
+                error.response.data.message;
+
+        } else {
+
+            downloadMessage.innerText =
+                "Something went wrong";
+
+        }
+    }
+});
+
+const downloadHistory = document.getElementById("downloadHistory");
+
+const loadDownloadHistory = async () => {
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            "http://localhost:3000/download-history",
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+        );
+
+        downloadHistory.innerHTML = "";
+
+        response.data.forEach((download) => {
+
+            const downloadItem = document.createElement("div");
+
+            const date = new Date(download.downloadDate);
+
+            downloadItem.innerHTML = `
+                <p>
+                    Download Date:
+                    ${date.toLocaleString()}
+                </p>
+
+                <a href="${download.fileUrl}" target="_blank">
+                    Open File
+                </a>
+
+                <hr>
+            `;
+
+            downloadHistory.appendChild(downloadItem);
+
+        });
+
+    } catch (error) {
+
+        if (error.response) {
+
+            downloadHistory.innerText =
+                error.response.data.message;
+
+        } else {
+
+            downloadHistory.innerText =
+                "Unable to load download history";
+
+        }
+    }
+};
+
+loadDownloadHistory();

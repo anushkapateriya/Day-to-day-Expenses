@@ -12,11 +12,13 @@ const expenseRoutes = require("./routes/expenseRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const premiumRoutes = require("./routes/premiumRoutes");
 const passwordRoutes = require("./routes/passwordRoutes");
+const expenseDownloadRoutes = require("./routes/expenseDownloadRoutes");
 
 const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const ForgotPasswordRequest = require("./models/forgotPasswordRequest");
+const DownloadHistory = require("./models/downloadHistory");
 
 const app = express();
 
@@ -38,6 +40,7 @@ app.use("/", expenseRoutes);
 app.use("/", orderRoutes);
 app.use("/", premiumRoutes);
 app.use("/", passwordRoutes);
+app.use("/", expenseDownloadRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -50,6 +53,14 @@ User.hasMany(ForgotPasswordRequest, {
 });
 
 ForgotPasswordRequest.belongsTo(User, {
+    foreignKey: "userId"
+});
+
+User.hasMany(DownloadHistory, {
+    foreignKey: "userId"
+});
+
+DownloadHistory.belongsTo(User, {
     foreignKey: "userId"
 });
 
